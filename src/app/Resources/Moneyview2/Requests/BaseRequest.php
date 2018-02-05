@@ -10,8 +10,13 @@ namespace App\Resources\Moneyview2\Requests;
 
 use App\Interfaces\ResourceInterface;
 use App\Resources\MappedHttpMethodRequest;
+use Exception;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
+use SimpleXMLElement;
+use SoapClient;
+use SoapVar;
 use Spatie\ArrayToXml\ArrayToXml;
-use Config, Exception, SoapVar, SoapClient, SimpleXMLElement;
 
 class BaseRequest extends MappedHttpMethodRequest
 {
@@ -53,6 +58,7 @@ class BaseRequest extends MappedHttpMethodRequest
 
     public function __construct()
     {
+        app()->configure('resource_moneyview2');
         $this->soapClient = new SoapClient(
             $this->config('settings.wsdl' ),
             [
@@ -75,6 +81,36 @@ class BaseRequest extends MappedHttpMethodRequest
         $result = $this->startSoap();
 
         $this->result =  $this->transformResult($result);
+
+        //Check for errors:
+        $this->checkForError($this->result);
+    }
+
+    /**
+     * Checks if the result has any errors; if it has, display it...
+     * (This can probably be done a lot nicer... feel free)
+     * @param $result
+     * @return void
+     */
+    public function checkForError($result)
+    {
+        if($this->config('debug.checkForError'))
+        {
+            //Check if there is any `GLOBAL_ESCAPE_REASON` in first child as we would need that to check...
+            if (is_array(head($result)) && array_key_exists('GLOBAL_ESCAPE_REASON', head($result)))
+            {
+                foreach ($result as $message)
+                {
+                    //Check that both messages are set and that the escape reason | local strings contains the word(s) under...
+                    if (isset($message['GLOBAL_ESCAPE_REASON'])
+                        && isset($message['LOCAL'])
+                        && Str::contains($message['GLOBAL_ESCAPE_REASON'] . ' ' . $message['LOCAL'], ['GEVULD', 'NIET GEVULD', 'ERROR'])
+                    ) {
+                        $this->setErrorString($message['GLOBAL_ESCAPE_REASON'] . ' ' . $message['LOCAL']);
+                    }
+                }
+            }
+        }
     }
 
     /**

@@ -4,5 +4,5 @@ vendor/
 src/Homestead.json
 src/Homestead.yaml
 src/.env
-src/storage/logs/
+src/storage/
 _data/

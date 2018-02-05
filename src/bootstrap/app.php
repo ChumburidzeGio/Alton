@@ -130,6 +130,7 @@ Event::subscribe(\App\Listeners\Resources2\TravelProvidersListener::class);
 Event::subscribe(\App\Listeners\Resources2\TravelResellersListener::class);
 Event::subscribe(\App\Listeners\Resources2\TravelUsersListener::class);
 Event::subscribe(\App\Listeners\Resources2\VaninsuranceListener::class);
+Event::subscribe(\App\Listeners\Resources2\CompaniesListener::class);
 //STOP RESOURCE2
 
 //include the resources binding

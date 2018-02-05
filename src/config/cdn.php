@@ -7,5 +7,5 @@
  */
 
 return array(
-    'domain' => ((app()->environment() == 'acc') ? 'http://code-acc.komparu.com' : $_ENV['STATIC_DOMAIN'])
+    'domain' => $_ENV['CDN_DOMAIN']
 );
