@@ -7,7 +7,7 @@ Since composer files only change rarely, we keep large image overhead small and 
 ### Directory structure
 ```
 src/          // Api code 
-docker/       // Local development docker support files (nginx)
+docker/       // Local development docker support files (nginx, phpfpm)
 _data/        // Tmp data mysql, such that mysql doesn't lose state during restarts. This folder can be deleted to start fresh.
 composer.*    // Composer files, after modifying composer files you run the setup again to trigger the change
 ```
