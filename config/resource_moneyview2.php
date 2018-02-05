@@ -10,8 +10,9 @@ use App\Interfaces\ResourceInterface;
 
 return [
     'debug'           => [
-        'exceptions' => true, //Show exceptions
+        'exceptions' => false, //Show exceptions
         'rawOutput' => false, //Show raw output in debug (dd)
+        'checkForError'  => false, //Checking for errors
     ],
     'settings'           => [
         'wsdl' => 'https://mv1engine.moneyview.nl/services/KomparuEngine/Soap.asmx?WSDL',
@@ -61,6 +62,73 @@ return [
         ResourceInterface::TRANSMISSION_TYPE          => 'Autogegevens_Transmissie',
         ResourceInterface::DRIVE_TYPE                 => 'Autogegevens_Aandrijving',
     ],
+    'choicelistGroups'         => [
+
+        'contentinsurance' => [
+            ResourceInterface::SECURITY,
+            ResourceInterface::OUTSIDE,
+            'valuation',
+            ResourceInterface::TYPE,
+            ResourceInterface::PERSONAL_CIRCUMSTANCES,
+            ResourceInterface::TYPE_OF_CONSTRUCTION,
+            ResourceInterface::OWN_RISK,
+            'calculation_form',
+            '__id' => 956100,
+            '__product_type' => 51,
+        ],
+
+        'liabilityinsurance' => [
+            ResourceInterface::OWN_RISK_TYPE,
+            ResourceInterface::OWN_RISK_CHILDREN,
+            ResourceInterface::OWN_RISK_GENERAL,
+            ResourceInterface::PERSONAL_CIRCUMSTANCES,
+            '__id' => 956200,
+            '__product_type' => 52,
+        ],
+
+        'homeinsurance' => [
+            ResourceInterface::TYPE,
+            ResourceInterface::TYPE_OF_CONSTRUCTION,
+            ResourceInterface::CONSTRUCTION,
+            ResourceInterface::PERSONAL_CIRCUMSTANCES,
+            ResourceInterface::OUTSIDE,
+            ResourceInterface::FOUNDATION,
+            ResourceInterface::FINISH,
+            '__id' => 956300,
+            '__product_type' => 54
+        ],
+
+        'travelinsurance' => [
+            ResourceInterface::COVERAGE_AREA,
+            ResourceInterface::COVERAGE_PERIOD,
+            ResourceInterface::TOTAL_LUGGAGE,
+            ResourceInterface::TOTAL_SCUBA_DIVING,
+            ResourceInterface::TOTAL_CASH_CHEQUES,
+            ResourceInterface::COVERAGE_CANCELLATION,
+            '__id' => 956400,
+            '__product_type' => 53
+        ],
+
+        'legalexpensesinsurance' => [
+            ResourceInterface::PERSONAL_CIRCUMSTANCES,
+            ResourceInterface::CALCULATION_INSURED_AMOUNT,
+            ResourceInterface::TRAFFIC_COVERAGE,
+            ResourceInterface::PERSON_SINGLE,
+            '__id' => 956500,
+            '__product_type' => 55,
+        ],
+
+        /*
+        'carinsurance' => [
+            ResourceInterface::FUEL_TYPE_NAME,
+            ResourceInterface::SECURITY_CLASS,
+            ResourceInterface::BODY_TYPE,
+            ResourceInterface::TRANSMISSION_TYPE,
+            ResourceInterface::DRIVE_TYPE,
+        ],*/
+
+    ],
+
     'carinsuranceFilter' => [
         'Ditzo',
         'Verzekeruzelf.nl',

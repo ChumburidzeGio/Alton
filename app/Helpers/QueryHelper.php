@@ -261,8 +261,11 @@ class QueryHelper
     private static function applyWheres($query, $tableShortHand, $wheres)
     {
         foreach ($wheres as $whereColumn => $whereValue){
-            //ONLY EQUALITY FOR NOW
-            $query = $query->where($tableShortHand . '.' .$whereColumn, $whereValue);
+            if(is_array($whereValue)){
+                $query = $query->whereIn($tableShortHand . '.' .$whereColumn, $whereValue);
+            }else{
+                $query = $query->where($tableShortHand . '.' .$whereColumn, $whereValue);
+            }
         }
         return $query;
     }

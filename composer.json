@@ -53,7 +53,8 @@
     "komparu/laravel-mongodb-cache": "dev-master",
     "itsgoingd/clockwork": "1.14.*",
     "hannesvdvreken/guzzle-clockwork": "~1.0",
-    "guzzlehttp/guzzle": "~6.0"
+    "guzzlehttp/guzzle": "~6.0",
+    "spatie/array-to-xml": "2.3.0"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",
