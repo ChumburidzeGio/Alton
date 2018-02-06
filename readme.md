@@ -29,6 +29,26 @@ curl http://localhost/index.php             // Test => Awesomeness is coming sho
 docker-compose exec mysql bash /seed/import.sh
 ```
 
+### .env file
+```
+// Place this in src->.env
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=komparu_dev
+DB_USERNAME=root
+DB_PASSWORD=komparu_root
+
+MYSQL_PRODUCT_HOST=mysql
+MYSQL_PRODUCT_NAME=komparu_product_dev
+MYSQL_PRODUCT_USER=root
+MYSQL_PRODUCT_PASS=komparu_root
+
+
+CACHE_DRIVER=memcached
+QUEUE_DRIVER=sync
+```
+
 ### Environment reset
 ```
 docker-compose down                         // To make sure you start from a clean env
