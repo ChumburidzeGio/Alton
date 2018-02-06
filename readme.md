@@ -50,6 +50,8 @@ MYSQL_PRODUCT_PASS=komparu_root
 
 CACHE_DRIVER=memcached
 QUEUE_DRIVER=sync
+
+CDN_DOMAIN=http://code.komparu.com/
 ```
 
 ### Environment reset
