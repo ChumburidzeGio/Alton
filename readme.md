@@ -26,7 +26,7 @@ curl http://localhost/index.php             // Test => Awesomeness is coming sho
 ### Seed database
 ```
 // Seed the DB, put productDB.sql.gz in `seeds/mysql/`
-docker-compose exec mysql 'cat /seed/productDB.sql.gz | gunzip |  mysql -u root -pkomparu_root'             // This will import the database
+docker-compose exec mysql bash /seed/mysql/import.sh
 ```
 
 ### Environment reset
