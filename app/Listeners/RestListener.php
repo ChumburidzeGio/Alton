@@ -123,10 +123,7 @@ class RestListener
         switch ($action) {
 
             case self::ACTION_INDEX:
-//                $response = DocumentHelper::get($index, $type, ['filters' => $filters] + $options);
-//                dd($response->documents()->toArray());
                 $response = QueryHelper::index($index, $type, $resource, ['filters' => $filters] + $options);
-//                dd(head($response));
                 $data->exchangeArray($response);
                 // Add the total count header for pagination purposes
 
@@ -170,22 +167,8 @@ class RestListener
                 cw($insertData);
 
                 unset($insertData['_no_propagation']);
-                $response = QueryHelper::store($index, $type, $insertData, $resource, $options);
-                $item = $response->toArray();
+                $item = QueryHelper::store($index, $type, $insertData, $resource, $options);
 
-                //TODO: Investigate why this needed to be done by Daan like this. Since no shitty travel anymore
-                //we probably do not need this
-                try {
-                    self::checkPermissionsFilters($index, $type, $item['__id'], $permissionFilters);
-                }
-                catch (DocumentNotFound $e) {
-                    // Created an object that we're not allowed to access? Bad! Abort!
-                    QueryHelper::destroy($index, $type, $item['__id'], $resource);
-                    throw new \Exception('Cannot create that item: not allowed.');
-                }
-
-                $response = QueryHelper::show($index, $type, $item['__id'], $resource, ['filters' => $permissionFilters]);
-                $item = $response->toArray();
                 $data->exchangeArray($item);
 
                 break;
@@ -193,9 +176,8 @@ class RestListener
             case self::ACTION_SHOW:
                 self::checkPermissionsFilters($index, $type, $id, $permissionFilters);
 
-                $response = QueryHelper::show($index, $type, $id, $resource, ['filters' => $filters] + $options);
-                if($response){
-                    $item = $response->toArray();
+                $item = QueryHelper::show($index, $type, $id, $resource, ['filters' => $filters] + $options);
+                if($item){
                     $data->exchangeArray($item);
                 }
                 break;
