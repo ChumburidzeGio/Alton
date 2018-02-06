@@ -22,6 +22,7 @@ curl http://localhost/index.php             // Test => Awesomeness is coming sho
 
 // You can stop the running container with CTRL+C, docker-compose stop or docker-compose down
 ```
+or use `./rebuild.sh`, which runs the above
 
 ### Seed database
 ```
