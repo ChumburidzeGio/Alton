@@ -1,6 +1,8 @@
-/vendor
-/.idea
-Homestead.json
-Homestead.yaml
-.env
-/storage
+src/vendor/
+vendor/
+.idea
+src/Homestead.json
+src/Homestead.yaml
+src/.env
+src/storage/
+_data/
