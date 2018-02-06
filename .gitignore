@@ -6,3 +6,5 @@ src/Homestead.yaml
 src/.env
 src/storage/
 _data/
+.DS_Store
+seeds/**/*.gz

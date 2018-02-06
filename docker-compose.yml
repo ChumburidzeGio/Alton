@@ -4,6 +4,7 @@ services:
    image: mysql:5.7
    volumes:
    - ./_data/database/:/var/lib/mysql/
+   - ./seeds/mysql:/seed
   #  - ./db/disable_strict_mode.cnf:/etc/mysql/conf.d/disable_strict_mode.cnf
    restart: always
    ports:

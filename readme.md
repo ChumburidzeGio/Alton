@@ -7,9 +7,10 @@ Since composer files only change rarely, we keep large image overhead small and 
 ### Directory structure
 ```
 src/          // Api code 
-docker/       // Local development docker support files (nginx, phpfpm)
-_data/        // Tmp data mysql, such that mysql doesn't lose state during restarts. This folder can be deleted to start fresh.
 composer.*    // Composer files, after modifying composer files you run the setup again to trigger the change
+docker/       // Local development docker support files (nginx, phpfpm)
+seeds/        // Place to put mysql seed files for the docker environment
+_data/        // Tmp data mysql, such that mysql doesn't lose state during restarts. This folder can be deleted to start fresh.
 ```
 
 ### Development environment setup
@@ -20,6 +21,12 @@ docker-compose exec api composer install    // Run the autoload stuff
 curl http://localhost/index.php             // Test => Awesomeness is coming shortly!
 
 // You can stop the running container with CTRL+C, docker-compose stop or docker-compose down
+```
+
+### Seed database
+```
+// Seed the DB, put productDB.sql.gz in `seeds/mysql/`
+docker-compose exec mysql 'cat /seed/productDB.sql.gz | gunzip |  mysql -u root -pkomparu_root'             // This will import the database
 ```
 
 ### Environment reset
