@@ -15,6 +15,8 @@ _data/        // Tmp data mysql, such that mysql doesn't lose state during resta
 
 ### Development environment setup
 ```
+// Create the network
+docker network create dig_local --subnet=172.28.0.0/16        // Network to share with the previous docker setup
 docker-compose down                         // To make sure you start from a clean env
 docker-compose up -d                          // First time docker image layer cache is built, which includes a `composer install --no-autoloader`. Second time this goes faster.
 docker-compose exec api composer install    // Run the autoload stuff

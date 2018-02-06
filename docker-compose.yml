@@ -1,4 +1,10 @@
 version: '2'
+
+networks:
+  default:
+    external:
+      name: dig_local
+
 services:
   mysql:
    image: mysql:5.7
@@ -7,8 +13,11 @@ services:
    - ./seeds/mysql:/seed
   #  - ./db/disable_strict_mode.cnf:/etc/mysql/conf.d/disable_strict_mode.cnf
    restart: always
+   networks:
+    default:
+      ipv4_address: 172.28.0.2
    ports:
-   - 3306:3306
+   - 3306:3306 
    environment:
    - MYSQL_ROOT_PASSWORD=komparu_root
    - MYSQL_DATABASE=komparu
@@ -26,7 +35,7 @@ services:
     links:
     - api
     ports:
-    - "80:80"
+    - "8001:80" 
     environment:
     - VIRTUAL_HOST="api-local.dig.network"
     - VIRTUAL_HOST_WEIGHT=1
@@ -42,6 +51,6 @@ services:
     depends_on: 
     - mysql
     links:
-    - mysql
+    - mysql 
     command:
     - php-fpm7.0
