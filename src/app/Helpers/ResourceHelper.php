@@ -496,10 +496,13 @@ class ResourceHelper
                     // Event::until('resource.process.propagated', [$resource, $input, $data, $action, $id]);
                     //HACK
                     $input[OptionsListener::OPTION_USE_PLAN] = true;
-                    if (!empty($input[OptionsListener::OPTION_USE_PLAN]))
+                    if (!empty($input[OptionsListener::OPTION_USE_PLAN])){
                         $result = ResourcePlanListener::process($resource, $input, $data, $action, $id);
-                    else
+                    }
+                    else{
                         $result = ResourceRecursionListener::process($resource, $input, $data, $action, $id);
+                    }
+
 
                     $data->exchangeArray($result);
                 }

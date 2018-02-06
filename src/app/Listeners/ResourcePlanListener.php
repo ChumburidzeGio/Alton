@@ -456,20 +456,13 @@ class ResourcePlanListener
             case Type::BOOLEAN:
                 return is_scalar($value) ? (bool)$value : null;
             case Type::ARR:
-                $value = is_array($value) ? $value : [];
-                if (!empty($definition['sub_types'])) {
-                    foreach ($value as $k => $v) {
-                        foreach ($definition['sub_types'] as $subFieldName => $subDefinition) {
-                            if (!str_contains($subFieldName, '.'))
-                                $value[$k][$subFieldName] = self::castValueToType(array_get($value[$k], $subFieldName), $subDefinition);
-                            else
-                                array_set($value[$k], $subFieldName, self::castValueToType(array_get($value[$k], $subFieldName), $subDefinition));
-                        }
-                    }
+            case Type::OBJECT:
+                try{
+                    $value = json_decode($value);
+                }catch(\Exception $ex){
+                    throw new \Exception('Column has invalid json.');
                 }
                 return $value;
-            case Type::OBJECT:
-                return is_array($value) ? $value : null;
             default:
                 return $value;
         }
