@@ -16,7 +16,7 @@ _data/        // Tmp data mysql, such that mysql doesn't lose state during resta
 ### Development environment setup
 ```
 docker-compose down                         // To make sure you start from a clean env
-docker-compose up                           // First time docker image layer cache is built, which includes a `composer install --no-autoloader`. Second time this goes faster.
+docker-compose up -d                          // First time docker image layer cache is built, which includes a `composer install --no-autoloader`. Second time this goes faster.
 docker-compose exec api composer install    // Run the autoload stuff
 curl http://localhost/index.php             // Test => Awesomeness is coming shortly!
 
