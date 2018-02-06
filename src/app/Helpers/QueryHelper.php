@@ -428,7 +428,7 @@ class QueryHelper
         // Setup the primary key
         $identifier =  '__id INT(11) UNSIGNED'. ($autoIncrementId ? ' AUTO_INCREMENT' : '') .' PRIMARY KEY';
 
-        $sql = sprintf('CREATE TABLE %s (%s) DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci', $tableName, $identifier);
+        $sql = sprintf('CREATE TABLE `%s` (%s) DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci', $tableName, $identifier);
 
         if ($pdo->exec($sql) !== 0) {
             throw new \Exception('Table could not be created: `' . json_encode($pdo->errorInfo()) . '`');
@@ -486,7 +486,7 @@ class QueryHelper
         }
 
         $currentType          = null;
-        $currentDefinitionSql = sprintf('SHOW COLUMNS FROM %s WHERE Field = ?', $table);
+        $currentDefinitionSql = sprintf('SHOW COLUMNS FROM `%s` WHERE Field = ?', $table);
         $stat                 = $pdo->prepare($currentDefinitionSql);
 
         if ($stat->execute([$name])) {
@@ -501,7 +501,7 @@ class QueryHelper
             }
         }
 
-        $alterSql = sprintf('ALTER TABLE %s ADD %s %s', $table, $name, $type);
+        $alterSql = sprintf('ALTER TABLE `%s` ADD `%s` %s', $table, $name, $type);
 
         if ($after) {
             $alterSql .= ' AFTER ' . $after;
@@ -516,7 +516,7 @@ class QueryHelper
                 'decimal(10,4)' => ['decimal(14,4)'],
             ];
 
-            $changeSql = sprintf('ALTER TABLE %s CHANGE %s %s %s', $table, $name, $name, $type);
+            $changeSql = sprintf('ALTER TABLE `%s` CHANGE `%s` `%s` %s', $table, $name, $name, $type);
 
             if (isset($possibleConverts[$currentType]) && in_array($type, $possibleConverts[$currentType])) {
                 $alterSql = $changeSql;
