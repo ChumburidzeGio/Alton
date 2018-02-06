@@ -82,7 +82,8 @@ class QueryHelper
         }
 
         //fetch and ovewrite if necessary
-        return self::fetchAndOverride($query, $resource, $options['conditions']['conditions']);
+        $conditions = $options['conditions']['conditions'] ?? [];
+        return self::fetchAndOverride($query, $resource, $conditions );
     }
 
     /**
@@ -137,7 +138,14 @@ class QueryHelper
      */
     public static function store($index, $type, $values, $resource, $options = [])
     {
+        //Store the requested data
+        $tableName = str_replace('.', '_', $resource->name);
+        $id = DB::connection('mysql_product')->table($tableName)->insertGetId($values);
+        if(!isset($values[ResourceInterface::__ID]) && $id){
+            $values[ResourceInterface::__ID] = intval($id);
+        }
 
+        return $values;
     }
 
 
