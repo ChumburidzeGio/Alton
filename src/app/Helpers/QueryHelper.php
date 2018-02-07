@@ -178,6 +178,11 @@ class QueryHelper
     public static function update($index, $type, $id, $values, $resource, $options = [])
     {
 
+        //First find if you have conditions in the input
+            //If you do
+            //Find the condition that comes on top using field->order
+        //If condition update tableName_extended with the changed extendable fields
+        //Else do a normal update
     }
 
     /**
@@ -305,6 +310,7 @@ class QueryHelper
     private static function getSelects($resource, $tableShortHand, $forExtended = false)
     {
         $selects = [];
+        $selects[] = $tableShortHand . '.' . ResourceInterface::__ID . ' AS ' . ResourceInterface::__ID;
         foreach ($resource->fields as $field){
             if($field->hasFilter(Field::FILTER_PATCH)){
                 $fieldName = str_replace('.', '_', $field->name);
