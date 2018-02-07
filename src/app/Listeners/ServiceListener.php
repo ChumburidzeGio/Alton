@@ -64,22 +64,8 @@ class ServiceListener
         /**
          * Special cases
          */
-        switch ($resource->getServiceMethodName()) {
-            case 'contract':
-                //contract funnels
-                if ($action == 'store') {
-                    $result = ContractHelper::process($resource, $input->getArrayCopy());
-                } else if ($action == 'index') {
-                    $result = ContractHelper::retrieve($resource, $input->getArrayCopy());
-                }
-                break;
-            case 'offer':
-                $result = OfferHelper::process($resource, $input->getArrayCopy());
-                break;
-            default:
-                if (in_array($action, ['index', 'store', 'show'])) {
-                    $result = self::callService($resource, $input->getArrayCopy());
-                }
+        if (in_array($action, ['index', 'store', 'show'])) {
+            $result = self::callService($resource, $input->getArrayCopy());
         }
 
         if (!is_null($resource['cache_lifetime'])) {
