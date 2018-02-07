@@ -101,7 +101,7 @@ class ContractRequest extends BlaudirektAbstractRequest
             ],
             'price' => array_get($this->product, ResourceInterface::PREMIUM_GROSS),
             'order_id' => array_get($this->localOrder, ResourceInterface::__ID),
-            'hash' => ((app()->configure('resource_blaudirekt')) ? '' : config('resource_blaudirekt.settings.knip_hash')),
+            'hash' => Config::get('resource_blaudirekt.settings.knip_hash'),
         ];
 
         try

@@ -82,6 +82,15 @@ class PremiumRequest extends BlaudirektAbstractRequest
         return $premiums;
     }
 
+    public function setParams(array $params)
+    {
+        parent::setParams($params);
+
+        if (!is_array($this->params['products'])) {
+            $this->params['products'] = [$this->params['products']];
+        }
+    }
+
     public function executeFunction()
     {
         parent::executeFunction();

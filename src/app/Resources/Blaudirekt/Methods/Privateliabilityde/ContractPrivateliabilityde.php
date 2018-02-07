@@ -14,9 +14,9 @@ class ContractPrivateliabilityde extends BlaudirektAbstractRequest
     protected $requestParams;
 
     protected $inputTransformations = [
-        ResourceInterface::BIRTHDATE => 'convertDate',
+        ResourceInterface::BIRTHDATE  => 'convertDate',
         ResourceInterface::START_DATE => 'convertDate',
-        ResourceInterface::RANGE => 'convertRange',
+        ResourceInterface::RANGE      => 'convertRange',
     ];
 
     protected $product = null;
@@ -27,52 +27,73 @@ class ContractPrivateliabilityde extends BlaudirektAbstractRequest
 
     protected $httpResultEncoding = self::DATA_ENCODING_TEXT;
 
+    protected $httpMethod = self::METHOD_POST;
+
+    protected $dataResult = false;
+
     protected $defaultParams = [
-        'ajax' => 1,
+        'ajax'                        => 1,
         'Vertrag_Kunde_nationalitaet' => 'de', //country code
-        'Vertrag_zahlweise' => 1,
-        'Vertrag_zahlart' => 'lastschrift', //payment method
-        'Vertrag_Konto_abweichend' => false,
-        'agreement' => [
+        'Vertrag_zahlweise'           => 1,
+        'Vertrag_zahlart'             => 'lastschrift', //payment method
+        'Vertrag_Konto_abweichend'    => false,
+        'agreement'                   => [
             "0" => true
         ],
-        'Job_vertrag' => 13138,
-        'Rechner_job' => 'abschluss',
+        'Rechner_job'                 => 'abschluss',
     ];
 
     protected $inputToExternalMapping = [
-        ResourceInterface::SALUTATION => 'Vertrag_Kunde_anrede',
-        ResourceInterface::TITLE => 'Vertrag_Kunde_titel',
-        ResourceInterface::FIRST_NAME => 'Vertrag_Kunde_vorname_person',
-        ResourceInterface::LAST_NAME => 'Vertrag_Kunde_nachname_person',
-        ResourceInterface::POSTAL_ADDRESS_STREET => 'Vertrag_Kunde_strasse',
+        ResourceInterface::SALUTATION                 => 'Vertrag_Kunde_anrede',
+        ResourceInterface::TITLE                      => 'Vertrag_Kunde_titel',
+        ResourceInterface::FIRST_NAME                 => 'Vertrag_Kunde_vorname_person',
+        ResourceInterface::LAST_NAME                  => 'Vertrag_Kunde_nachname_person',
+        ResourceInterface::POSTAL_ADDRESS_STREET      => 'Vertrag_Kunde_strasse',
         ResourceInterface::POSTAL_ADDRESS_POSTAL_CODE => 'Vertrag_Kunde_plz',
-        ResourceInterface::POSTAL_ADDRESS_CITY => 'Vertrag_Kunde_ort',
-        ResourceInterface::PROFESSION => 'Vertrag_Kunde_beruf_person',
-        ResourceInterface::PHONE_MOBILE => 'Vertrag_Kunde_mobil_privat',
-        ResourceInterface::PHONE_LANDLINE => 'Vertrag_Kunde_telefon_privat',
-        ResourceInterface::FAX => 'Vertrag_Kunde_fax_privat',
-        ResourceInterface::EMAIL => 'Vertrag_Kunde_email_privat',
-        ResourceInterface::BIRTHDATE => 'Vertrag_Kunde_geburtsdatum',
-        ResourceInterface::START_DATE => 'Vertrag_beginn',
+        ResourceInterface::POSTAL_ADDRESS_CITY        => 'Vertrag_Kunde_ort',
+        ResourceInterface::PROFESSION                 => 'Vertrag_Kunde_beruf_person',
+        ResourceInterface::PHONE_MOBILE               => 'Vertrag_Kunde_mobil_privat',
+        ResourceInterface::PHONE_LANDLINE             => 'Vertrag_Kunde_telefon_privat',
+        ResourceInterface::FAX                        => 'Vertrag_Kunde_fax_privat',
+        ResourceInterface::EMAIL                      => 'Vertrag_Kunde_email_privat',
+        ResourceInterface::BIRTHDATE                  => 'Vertrag_Kunde_geburtsdatum',
+        ResourceInterface::START_DATE                 => 'Vertrag_beginn',
 
         ResourceInterface::BANK_ACCOUNT_IBAN => 'Vertrag_Konto_iban',
-        ResourceInterface::COMMENTS => 'Vertrag_vertragsnotiz',
+        ResourceInterface::COMMENTS          => 'Vertrag_vertragsnotiz',
     ];
 
     public function __construct($requestParams = [])
     {
-        parent::__construct('bd/999997/privathaftpflicht/', self::METHOD_POST);
+        parent::__construct('bd/privathaftpflicht/');
+        $this->defaultParams['vermittler']  = Config::get('resource_blaudirekt.settings.broker_id');
+        $this->defaultParams['Job_vertrag'] = Config::get('resource_blaudirekt.settings.Job_vertrag');
     }
 
     public function executeFunction()
     {
         $this->createOrderLocally();
-
         parent::executeFunction();
 
+
+        // check for errors
+        if(str_contains($this->result, 'Fehlercode')){
+            preg_match('/Fehlercode: (.{6})/', $this->result, $matches);
+            if(isset($matches[1])){
+                $this->addErrorMessage(null, "blaudirekt.error", "Unknown error from Blaudirekt: " . $matches[1]);
+                return;
+            }
+        }
+
+        if( ! isset($this->responseHeaders['X-Dio-Contract-Id'], $this->responseHeaders['X-Dio-Customer-Id'])){
+            $this->addErrorMessage(null, "blaudirekt.error", "No contract id or customer id in reply");
+            return;
+        }
         $this->updateOrder([
-            ResourceInterface::STATUS => ['COMPLETED']
+            ResourceInterface::STATUS      => ['COMPLETED'],
+            ResourceInterface::CONTRACT_ID => current($this->responseHeaders['X-Dio-Contract-Id']),
+            ResourceInterface::CUSTOMER_ID => current($this->responseHeaders['X-Dio-Customer-Id']),
+
         ]);
 
         $knipStatusCode = $this->createOrderInKnip();
@@ -81,32 +102,33 @@ class ContractPrivateliabilityde extends BlaudirektAbstractRequest
             ResourceInterface::KNIP_HTTP_CODE => $knipStatusCode
         ]);
 
+
         $this->result = [
-            'status'   => 'success',
-            'order'    => $this->localOrder,
+            'status' => 'success',
+            'order'  => $this->localOrder,
         ];
     }
+
 
     public function createOrderInKnip()
     {
         $knipData = [
             'product_ids' => $this->product[ResourceInterface::__ID],
-            'company' => [
-                'name' => 'blaudirekt',
+            'company'     => [
+                'name'    => 'blaudirekt',
                 'knip_id' => 'privathaftpflichtversicherung'
             ],
-            'price' => array_get($this->product, ResourceInterface::PREMIUM_GROSS),
-            'order_id' => array_get($this->localOrder, ResourceInterface::__ID),
-            'hash' => ((app()->configure('resource_blaudirekt')) ? '' : config('resource_blaudirekt.settings.knip_hash')),
+            'price'       => array_get($this->product, ResourceInterface::PREMIUM_GROSS),
+            'order_id'    => array_get($this->localOrder, ResourceInterface::__ID),
+            'hash'        => Config::get('resource_blaudirekt.settings.knip_hash'),
         ];
 
-        try
-        {
+        try{
             ResourceHelper::callResource2('set_additional_insurances.knip', $knipData, RestListener::ACTION_STORE);
 
             return 201;
+        }catch(Exception $e){
         }
-        catch (Exception $e) {}
 
         return 404;
     }
@@ -120,15 +142,15 @@ class ContractPrivateliabilityde extends BlaudirektAbstractRequest
         $this->product = $this->getProductById($productId);
 
         $orderData = [
-            ResourceInterface::USER => array_get($requestParams, ResourceInterface::USER),
-            ResourceInterface::WEBSITE => array_get($requestParams, ResourceInterface::WEBSITE),
-            ResourceInterface::IP => array_get($requestParams, ResourceInterface::IP),
+            ResourceInterface::USER       => array_get($requestParams, ResourceInterface::USER),
+            ResourceInterface::WEBSITE    => array_get($requestParams, ResourceInterface::WEBSITE),
+            ResourceInterface::IP         => array_get($requestParams, ResourceInterface::IP),
             ResourceInterface::SESSION_ID => array_get($requestParams, ResourceInterface::SESSION_ID),
             ResourceInterface::PRODUCT_ID => $productId,
-            ResourceInterface::SESSION => array_get($requestParams, ResourceInterface::SESSION),
-            ResourceInterface::STATUS => ['PENDING'],
-            ResourceInterface::REQUEST => $requestParams,
-            ResourceInterface::PRODUCT => $this->product,
+            ResourceInterface::SESSION    => array_get($requestParams, ResourceInterface::SESSION),
+            ResourceInterface::STATUS     => ['PENDING'],
+            ResourceInterface::REQUEST    => $requestParams,
+            ResourceInterface::PRODUCT    => $this->product,
         ];
 
         $this->localOrder = ResourceHelper::callResource2('order_privateliabilityde.blaudirekt', $orderData, RestListener::ACTION_STORE);
@@ -145,5 +167,6 @@ class ContractPrivateliabilityde extends BlaudirektAbstractRequest
 
         return (array) $product;
     }
+
 
 }

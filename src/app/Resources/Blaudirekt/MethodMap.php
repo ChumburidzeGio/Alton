@@ -23,5 +23,21 @@ class MethodMap extends AbstractServiceRequest
             'class'       => \App\Resources\Blaudirekt\Methods\Privateliabilityde\ContractPrivateliabilityde::class,
             'description' => '',
         ],
+        'getkunde_privateliabilityde' => [
+            'class'       => \App\Resources\Blaudirekt\Methods\Privateliabilityde\GetKundePrivateliabilityde::class,
+            'description' => '',
+        ],
+        'getaddressen_privateliabilityde' => [
+            'class'       => \App\Resources\Blaudirekt\Methods\Privateliabilityde\GetAdressenPrivateliabilityde::class,
+            'description' => '',
+        ],
+        'getkontaktdaten_privateliabilityde' => [
+            'class'       => \App\Resources\Blaudirekt\Methods\Privateliabilityde\GetKontaktdatenPrivateliabilityde::class,
+            'description' => '',
+        ],
+        'getvertraege_privateliabilityde' => [
+            'class'       => \App\Resources\Blaudirekt\Methods\Privateliabilityde\GetVertraegePrivateliabilityde::class,
+            'description' => '',
+        ],
     ];
 }
