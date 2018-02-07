@@ -107,3 +107,4 @@ $app->bind('resource.inrix', App\Resources\Inrix\Inrix::class);
 
 //Elipslife
 $app->bind('resource.elipslife', App\Resources\Elipslife\Elipslife::class);
+$app->bind('resource.allinone', App\Resources\Allinone\Allinone::class);

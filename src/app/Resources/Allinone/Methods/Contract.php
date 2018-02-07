@@ -32,8 +32,6 @@ class Contract extends AbstractMethodRequest
 
     function executeFunction()
     {
-
-
         $orderData = [
             ResourceInterface::GENDER               => array_get($this->params, ResourceInterface::GENDER),
             ResourceInterface::FIRST_NAME           => array_get($this->params, ResourceInterface::FIRST_NAME),
@@ -42,7 +40,7 @@ class Contract extends AbstractMethodRequest
             ResourceInterface::PHONE_PREFIX         => array_get($this->params, ResourceInterface::PHONE_PREFIX),
             ResourceInterface::PHONE                => array_get($this->params, ResourceInterface::PHONE),
             ResourceInterface::EMAIL                => array_get($this->params, ResourceInterface::EMAIL),
-            ResourceInterface::BANK_ACCOUNT_IBAN    => array_get($this->params, ResourceInterface::BANK_ACCOUNT_IBAN),
+            ResourceInterface::BANK_ACCOUNT_IBAN    => "it works",
 
         ];
 
