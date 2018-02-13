@@ -8,6 +8,8 @@ The scrapper module for Alton infrastructure. Using built-in spiders for the mos
 
 To simply test the spider just run in terminal
 
-```scrapy fetch --nolog --spider=pararius https://www.pararius.nl/huurwoningen/amsterdam/page-1```
+```bash
+scrapy fetch --nolog --spider=pararius https://www.pararius.nl/huurwoningen/amsterdam/page-1
+```
 
 You can pass ```--headers``` to print the response’s HTTP headers instead of the response’s body and ```--no-redirect``` to not follow HTTP 3xx redirects (default is to follow them)
